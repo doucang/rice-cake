@@ -293,6 +293,13 @@ textarea {
   text-decoration: none;
 }
 
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
 .success {
   display: grid;
   gap: 14px;

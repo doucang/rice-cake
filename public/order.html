@@ -12,14 +12,14 @@
         <a class="back" href="/">返回</a>
         <div>
           <h1>提交预订信息</h1>
-          <p>自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
+          <p>请先完成付款｜自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
         </div>
       </header>
 
       <section class="card" style="margin-bottom: 16px;">
         <h2 style="margin-bottom: 8px;">古法年糕（预订制）</h2>
-        <p class="hint" style="margin-bottom: 8px;">请选择您希望的取货日期/时间，并填写数量与 WhatsApp 联系方式。我们将尽快与您确认预订信息。</p>
-        <p class="hint">提示：本页面为预订登记入口；订单以 WhatsApp 确认为准。</p>
+        <p class="hint" style="margin-bottom: 8px;">请选择您希望的取货日期，并填写数量与 WhatsApp 联系方式。我们将尽快与您确认预订信息。</p>
+        <p class="hint">提示：本页面需填写付款参考号；订单以 WhatsApp 确认为准。</p>
       </section>
 
       <section id="formSection" class="card">
@@ -35,6 +35,10 @@
               <input type="number" min="1" name="quantity" value="1" required />
               <button type="button" class="qty-btn" data-step="1">+</button>
             </div>
+          </label>
+          <label>
+            付款参考号 / Transaction ID（必填）
+            <input type="text" name="paymentRef" placeholder="例如：TNG 的 Transaction ID / Reference No." required />
           </label>
           <label>
             WhatsApp 联系方式（必填，建议含国家区号）

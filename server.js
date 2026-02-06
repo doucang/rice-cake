@@ -87,19 +87,28 @@ app.get("/api/orders", requireAdmin, (req, res) => {
     return sum + (Number(order.quantity) || 0);
   }, 0);
 
+  // basic breakdown
+  const statusCounts = orders.reduce((acc, o) => {
+    const s = o.status || "NEW";
+    acc[s] = (acc[s] || 0) + 1;
+    return acc;
+  }, {});
+
   res.json({
     total,
     totalQuantity,
+    statusCounts,
     orders
   });
 });
 
 app.post("/api/orders", (req, res) => {
-  const { name, contact, phone, quantity, pickupDate, notes } = req.body || {};
+  const { name, contact, phone, quantity, pickupDate, paymentRef, notes } = req.body || {};
   const finalContact = contact || phone || "";
+  const finalPaymentRef = (paymentRef || "").trim();
 
-  if (!name || !finalContact || !quantity || !pickupDate) {
-    return res.status(400).json({ error: "请完整填写称呼、联系方式、数量和取货日期" });
+  if (!name || !finalContact || !quantity || !pickupDate || !finalPaymentRef) {
+    return res.status(400).json({ error: "请完整填写取货日期、数量、付款参考号、联系方式与称呼" });
   }
 
   const orders = readOrders();
@@ -110,7 +119,9 @@ app.post("/api/orders", (req, res) => {
     contact: finalContact,
     quantity: Number(quantity),
     pickupDate,
-    pickupLocation: "16 Sierra", 
+    pickupLocation: "16 Sierra",
+    paymentRef: finalPaymentRef,
+    status: "NEW",
     notes: notes || ""
   };
 
@@ -118,6 +129,28 @@ app.post("/api/orders", (req, res) => {
   writeOrders(orders);
 
   res.json({ ok: true, order: newOrder });
+});
+
+app.patch("/api/orders/:id", requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body || {};
+  const next = String(status || "").toUpperCase();
+  const allowed = new Set(["NEW", "PAID", "FULFILLED", "CANCELLED"]);
+  if (!allowed.has(next)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
+  const orders = readOrders();
+  const idx = orders.findIndex(o => o.id === id);
+  if (idx < 0) return res.status(404).json({ error: "Not found" });
+
+  orders[idx] = {
+    ...orders[idx],
+    status: next,
+    updatedAt: new Date().toISOString()
+  };
+  writeOrders(orders);
+  res.json({ ok: true, order: orders[idx] });
 });
 
 function cryptoRandomId() {
