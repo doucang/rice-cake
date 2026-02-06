@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>填写预定 | 年糕</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="order">
+    <main class="page">
+      <header class="order-header">
+        <a class="back" href="/">返回</a>
+        <div>
+          <h1>填写预定</h1>
+          <p>取货地点：La Thea 保安亭前 · 线下支付</p>
+        </div>
+      </header>
+
+      <section id="formSection" class="card">
+        <form id="orderForm" class="order-form">
+          <label>
+            称呼
+            <input type="text" name="name" placeholder="例如：李先生" required />
+          </label>
+          <label>
+            联系方式（手机 / WhatsApp / 微信）
+            <input type="text" name="contact" placeholder="例如：012-3456789 或 WeChat: xxx" required />
+          </label>
+          <label>
+            预订数量（份）
+            <div class="quantity">
+              <button type="button" class="qty-btn" data-step="-1">-</button>
+              <input type="number" min="1" name="quantity" value="1" required />
+              <button type="button" class="qty-btn" data-step="1">+</button>
+            </div>
+          </label>
+          <label>
+            取货日期
+            <input type="date" name="pickupDate" required />
+          </label>
+          <label>
+            备注（可选）
+            <textarea name="notes" rows="3" placeholder="例如：不要太甜"></textarea>
+          </label>
+          <button type="submit" class="cta">提交预定</button>
+          <p class="hint">提交后我们会联系你确认取货。</p>
+        </form>
+      </section>
+
+      <section id="successSection" class="card success hidden">
+        <h2>恭喜你完成预定</h2>
+        <p>我们会尽快联系你确认，并安排制作。</p>
+        <div class="success-info">
+          <p>取货地点：La Thea 保安亭前</p>
+          <p>支付方式：线下支付</p>
+        </div>
+        <a class="ghost" href="/">返回首页</a>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

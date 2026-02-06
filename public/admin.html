@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>后台管理 | 年糕预定</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="admin">
+    <main class="page">
+      <header class="order-header">
+        <a class="back" href="/">返回前台</a>
+        <div>
+          <h1>后台管理</h1>
+          <p>快速查看今天要做多少份，并联系客户确认。</p>
+        </div>
+      </header>
+
+      <section class="card summary" id="summary"></section>
+
+      <section class="card">
+        <div class="list-head">
+          <h2>预订列表</h2>
+          <button id="refreshBtn" class="ghost">刷新</button>
+        </div>
+        <div id="orderList" class="order-list"></div>
+      </section>
+    </main>
+
+    <script src="/admin.js"></script>
+  </body>
+</html>
