@@ -185,6 +185,12 @@ p {
   box-shadow: 0 16px 32px rgba(212, 106, 58, 0.35);
 }
 
+.cta.disabled,
+.cta[aria-disabled="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .hint {
   color: var(--muted);
   font-size: 0.9rem;

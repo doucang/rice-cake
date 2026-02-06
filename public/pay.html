@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>付款 | 叶记 · 古法手作小吃</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="order">
+    <main class="page">
+      <header class="order-header">
+        <a class="back" href="/info.html">返回</a>
+        <div>
+          <h1>付款并完成预订</h1>
+          <p>支付方式：TNG / DuitNow QR｜付款后填写 Transaction ID 提交</p>
+        </div>
+      </header>
+
+      <section class="card" style="margin-bottom: 16px;">
+        <h2 style="margin-bottom: 8px;">应付金额</h2>
+        <div class="summary-grid" style="margin-bottom: 12px;">
+          <div>
+            <p class="label">合计金额</p>
+            <p class="value" id="totalAmount">RM 0</p>
+          </div>
+          <div>
+            <p class="label">品类明细</p>
+            <p class="value" style="font-size: 1.1rem;" id="itemsSummary">-</p>
+          </div>
+        </div>
+        <div class="pay-qr">
+          <img src="/tng-qr.jpg" alt="Touch ’n Go / DuitNow 收款码" loading="lazy" />
+        </div>
+        <p class="hint" style="margin-top: 10px;">请按上方金额完成付款。付款后，请从 TNG 交易记录中复制/填写 Transaction ID。</p>
+      </section>
+
+      <section id="paySection" class="card">
+        <form id="payForm" class="order-form">
+          <label>
+            付款参考号 / Transaction ID（必填）
+            <input type="text" name="paymentRef" placeholder="例如：TNG 的 Transaction ID / Reference No." required />
+          </label>
+          <button type="submit" class="cta">提交预订（完成）</button>
+          <p class="hint">提交后我们将在 4 小时内通过 WhatsApp 回复确认。</p>
+        </form>
+      </section>
+
+      <section id="successSection" class="card success hidden">
+        <h2>预订已提交</h2>
+        <p>我们将在 4 小时内通过 WhatsApp 与您确认。</p>
+        <div class="success-info">
+          <p>自提地点：16 Sierra</p>
+          <p>说明：后台核对 Transaction ID 后确认收款</p>
+        </div>
+        <a class="ghost" href="/">返回首页</a>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

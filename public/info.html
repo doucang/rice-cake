@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>填写信息 | 叶记 · 古法手作小吃</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="order">
+    <main class="page">
+      <header class="order-header">
+        <a class="back" href="/order.html">返回</a>
+        <div>
+          <h1>填写预订信息</h1>
+          <p>自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
+        </div>
+      </header>
+
+      <section class="card" style="margin-bottom: 16px;">
+        <h2 style="margin-bottom: 8px;">订单确认</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">合计金额</p>
+            <p class="value" id="totalAmount">RM 0</p>
+          </div>
+          <div>
+            <p class="label">品类明细</p>
+            <p class="value" style="font-size: 1.1rem;" id="itemsSummary">-</p>
+          </div>
+        </div>
+        <p class="hint" style="margin-top: 10px;">下一步将进入付款页（TNG/DuitNow QR）。</p>
+      </section>
+
+      <section class="card">
+        <form id="infoForm" class="order-form">
+          <label>
+            取货日期（必填）
+            <input type="date" name="pickupDate" required />
+          </label>
+
+          <label>
+            WhatsApp 联系方式（必填，建议含国家区号）
+            <input type="text" name="contact" placeholder="例如：+60 12-345 6789" required />
+          </label>
+
+          <label>
+            称呼（必填）
+            <input type="text" name="name" placeholder="例如：李先生" required />
+          </label>
+
+          <label>
+            备注（选填）
+            <textarea name="notes" rows="3" placeholder="例如：不要太甜"></textarea>
+          </label>
+
+          <button type="submit" class="cta">确认信息，进入付款</button>
+          <p class="hint">提示：信息填写完成后再去付款，避免付款后忘记回来填写。</p>
+        </form>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
