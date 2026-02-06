@@ -103,7 +103,7 @@ app.get("/api/orders", requireAdmin, (req, res) => {
 });
 
 app.post("/api/orders", (req, res) => {
-  const { name, contact, phone, quantity, pickupDate, paymentRef, notes } = req.body || {};
+  const { name, contact, phone, quantity, pickupDate, paymentRef, items, total, notes } = req.body || {};
   const finalContact = contact || phone || "";
   const finalPaymentRef = (paymentRef || "").trim();
 
@@ -120,6 +120,8 @@ app.post("/api/orders", (req, res) => {
     quantity: Number(quantity),
     pickupDate,
     pickupLocation: "16 Sierra",
+    items: Array.isArray(items) ? items : [],
+    total: Number(total) || 0,
     paymentRef: finalPaymentRef,
     status: "NEW",
     notes: notes || ""

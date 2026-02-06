@@ -38,6 +38,8 @@ function renderOrders(data) {
           <p>付款参考号：${order.paymentRef || "-"}</p>
           <p>取货日期：${order.pickupDate || "-"}</p>
           <p>自提地点：${order.pickupLocation || "-"}</p>
+          <p>合计：RM ${order.total ?? "-"}</p>
+          <p>明细：${(order.items || []).map(x => `${x.name}×${x.qty}`).join("，") || "-"}</p>
           <p>备注：${order.notes || "-"}</p>
           <div class="admin-actions">
             <button class="ghost" data-action="paid" data-id="${order.id}">标记已收款</button>

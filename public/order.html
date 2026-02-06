@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>提交预订 | 叶记 · 古法手作小吃</title>
+    <title>预订 | 叶记 · 古法手作小吃</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="order">
@@ -11,55 +11,91 @@
       <header class="order-header">
         <a class="back" href="/">返回</a>
         <div>
-          <h1>提交预订信息</h1>
-          <p>请先完成付款｜自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
+          <h1>开始预订</h1>
+          <p>自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
         </div>
       </header>
 
+      <!-- Step 1: Choose category (MVP: only rice cake is live) -->
       <section class="card" style="margin-bottom: 16px;">
-        <h2 style="margin-bottom: 8px;">古法年糕（预订制）</h2>
-        <p class="hint" style="margin-bottom: 8px;">请选择您希望的取货日期，并填写数量与 WhatsApp 联系方式。我们将尽快与您确认预订信息。</p>
-        <p class="hint">提示：请先支付订金 RM 30，并填写付款参考号；订单以 WhatsApp 确认为准。</p>
+        <h2 style="margin-bottom: 8px;">选择品类</h2>
+        <div class="catalog">
+          <div class="catalog-item active" data-sku="ricecake" data-price="30">
+            <div>
+              <p class="catalog-title">古法年糕（预订制）</p>
+              <p class="hint">单价：RM 30 / 份</p>
+            </div>
+            <div class="catalog-qty">
+              <button type="button" class="qty-btn" data-step="-1" data-target="ricecakeQty">-</button>
+              <input id="ricecakeQty" type="number" min="0" name="ricecakeQty" value="1" />
+              <button type="button" class="qty-btn" data-step="1" data-target="ricecakeQty">+</button>
+            </div>
+          </div>
+
+          <div class="catalog-item disabled">
+            <div>
+              <p class="catalog-title">青草冻</p>
+              <p class="hint">即将上线（Coming soon）</p>
+            </div>
+            <span class="tag">Soon</span>
+          </div>
+        </div>
       </section>
 
+      <!-- Step 2: Cart + Pay -->
+      <section class="card" style="margin-bottom: 16px;">
+        <h2 style="margin-bottom: 8px;">合计与付款</h2>
+        <div class="summary-grid" style="margin-bottom: 12px;">
+          <div>
+            <p class="label">合计金额</p>
+            <p class="value" id="totalAmount">RM 30</p>
+          </div>
+          <div>
+            <p class="label">支付方式</p>
+            <p class="value" style="font-size: 1.1rem;">TNG / DuitNow QR</p>
+          </div>
+        </div>
+        <div class="pay-qr">
+          <img src="/tng-qr.jpg" alt="Touch ’n Go / DuitNow 收款码" loading="lazy" />
+        </div>
+        <p class="hint" style="margin-top: 10px;">提示：请先完成付款，再填写下方的「付款参考号 / Transaction ID」提交预订。</p>
+      </section>
+
+      <!-- Step 3: Submit booking -->
       <section id="formSection" class="card">
+        <h2 style="margin-bottom: 8px;">填写预订信息</h2>
         <form id="orderForm" class="order-form">
+          <input type="hidden" name="items" id="itemsInput" value="" />
+          <input type="hidden" name="total" id="totalInput" value="30" />
+
           <label>
             取货日期（必填）
             <input type="date" name="pickupDate" required />
           </label>
-          <label>
-            数量（必填）
-            <div class="quantity">
-              <button type="button" class="qty-btn" data-step="-1">-</button>
-              <input type="number" min="1" name="quantity" value="1" required />
-              <button type="button" class="qty-btn" data-step="1">+</button>
-            </div>
-          </label>
+
           <label>
             付款参考号 / Transaction ID（必填）
             <input type="text" name="paymentRef" placeholder="例如：TNG 的 Transaction ID / Reference No." required />
           </label>
+
           <label>
             WhatsApp 联系方式（必填，建议含国家区号）
             <input type="text" name="contact" placeholder="例如：+60 12-345 6789" required />
           </label>
+
           <label>
             称呼（必填）
             <input type="text" name="name" placeholder="例如：李先生" required />
           </label>
+
           <label>
             备注（选填）
-            <textarea name="notes" rows="3" placeholder="例如：想优先预订青草冻，可填写“青草冻”】【可选】"></textarea>
+            <textarea name="notes" rows="3" placeholder="例如：不要太甜"></textarea>
           </label>
-          <button type="submit" class="cta">提交预订信息</button>
-          <p class="hint">提交不会立即扣款；我们会在 4 小时内通过 WhatsApp 与您确认。</p>
-        </form>
-      </section>
 
-      <section class="card" style="margin-top: 16px;">
-        <h2 style="margin-bottom: 8px;">即将上线：青草冻</h2>
-        <p class="hint">如希望优先通知与预订，请在“备注”中填写「青草冻」。</p>
+          <button type="submit" class="cta">提交预订信息</button>
+          <p class="hint">提交不会立即扣款；订单以 WhatsApp 确认为准（4 小时内回复）。</p>
+        </form>
       </section>
 
       <section id="successSection" class="card success hidden">
@@ -67,7 +103,7 @@
         <p>我们将在 4 小时内通过 WhatsApp 与您确认。</p>
         <div class="success-info">
           <p>自提地点：16 Sierra</p>
-          <p>说明：以 WhatsApp 确认为准</p>
+          <p>说明：付款后提交 Transaction ID，后台核对后确认收款</p>
         </div>
         <a class="ghost" href="/">返回首页</a>
       </section>
