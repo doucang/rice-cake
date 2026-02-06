@@ -203,7 +203,7 @@ function setupQtyButtons() {
       // Build WhatsApp after-sales link (only opens when user clicks)
       const whatsappLink = document.getElementById("whatsappLink");
       if (whatsappLink) {
-        const phone = "601996119968";
+        const phone = "60199619968";
         const msg = [
           "你好，我需要售后/改期支持：",
           `订单号：${orderId || "-"}`,
