@@ -47,7 +47,7 @@ if (form) {
       alert("网络异常，请稍后再试");
     } finally {
       submitButton.disabled = false;
-      submitButton.textContent = "提交预定";
+      submitButton.textContent = "提交预订信息";
     }
   });
 }
