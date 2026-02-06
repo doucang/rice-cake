@@ -194,6 +194,27 @@ function setupQtyButtons() {
         return;
       }
 
+      const orderId = out?.order?.id;
+      const orderIdLine = document.getElementById("orderIdLine");
+      if (orderIdLine && orderId) {
+        orderIdLine.textContent = `订单号：${orderId}`;
+      }
+
+      // Build WhatsApp after-sales link (only opens when user clicks)
+      const whatsappLink = document.getElementById("whatsappLink");
+      if (whatsappLink) {
+        const phone = "601996119968";
+        const msg = [
+          "你好，我需要售后/改期支持：",
+          `订单号：${orderId || "-"}`,
+          `取货日期：${payload.pickupDate}`,
+          `合计金额：RM ${payload.total}`,
+          `Transaction ID：${paymentRef}`,
+          `称呼：${payload.name}`,
+        ].join("\n");
+        whatsappLink.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      }
+
       // clear stored flow data
       localStorage.removeItem("ricecake.checkout");
       localStorage.removeItem("ricecake.info");

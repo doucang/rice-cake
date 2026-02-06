@@ -204,6 +204,11 @@ p {
   font-size: 0.9rem;
 }
 
+.inline-link {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--line);
