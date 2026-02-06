@@ -110,7 +110,7 @@ app.post("/api/orders", (req, res) => {
     contact: finalContact,
     quantity: Number(quantity),
     pickupDate,
-    pickupLocation: "La Thea 保安亭前",
+    pickupLocation: "16 Sierra", 
     notes: notes || ""
   };
 

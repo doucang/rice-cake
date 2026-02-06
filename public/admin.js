@@ -33,7 +33,8 @@ function renderOrders(data) {
             <span>${order.quantity} 份</span>
           </div>
           <p>联系方式：${order.contact || "-"}</p>
-          <p>取货日期：${order.pickupDate || "-"}</p>
+          <p>取货日期/时间：${order.pickupDate || "-"}</p>
+          <p>自提地点：${order.pickupLocation || "-"}</p>
           <p>备注：${order.notes || "-"}</p>
           <p class="meta">提交时间：${created}</p>
         </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>填写预定 | 年糕</title>
+    <title>提交预订 | 叶记 · 古法手作小吃</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="order">
@@ -11,23 +11,25 @@
       <header class="order-header">
         <a class="back" href="/">返回</a>
         <div>
-          <h1>填写预定</h1>
-          <p>取货地点：La Thea 保安亭前 · 线下支付</p>
+          <h1>提交预订信息</h1>
+          <p>自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
         </div>
       </header>
+
+      <section class="card" style="margin-bottom: 16px;">
+        <h2 style="margin-bottom: 8px;">古法年糕（预订制）</h2>
+        <p class="hint" style="margin-bottom: 8px;">请选择您希望的取货日期/时间，并填写数量与 WhatsApp 联系方式。我们将尽快与您确认预订信息。</p>
+        <p class="hint">提示：本页面为预订登记入口；订单以 WhatsApp 确认为准。</p>
+      </section>
 
       <section id="formSection" class="card">
         <form id="orderForm" class="order-form">
           <label>
-            称呼
-            <input type="text" name="name" placeholder="例如：李先生" required />
+            取货日期/时间（必填）
+            <input type="text" name="pickupDate" placeholder="例如：2/10（周二）下午 3 点" required />
           </label>
           <label>
-            联系方式（手机 / WhatsApp / 微信）
-            <input type="text" name="contact" placeholder="例如：012-3456789 或 WeChat: xxx" required />
-          </label>
-          <label>
-            预订数量（份）
+            数量（必填）
             <div class="quantity">
               <button type="button" class="qty-btn" data-step="-1">-</button>
               <input type="number" min="1" name="quantity" value="1" required />
@@ -35,24 +37,33 @@
             </div>
           </label>
           <label>
-            取货日期
-            <input type="date" name="pickupDate" required />
+            WhatsApp 联系方式（必填，建议含国家区号）
+            <input type="text" name="contact" placeholder="例如：+60 12-345 6789" required />
           </label>
           <label>
-            备注（可选）
-            <textarea name="notes" rows="3" placeholder="例如：不要太甜"></textarea>
+            称呼（必填）
+            <input type="text" name="name" placeholder="例如：李先生" required />
           </label>
-          <button type="submit" class="cta">提交预定</button>
-          <p class="hint">提交后我们会联系你确认取货。</p>
+          <label>
+            备注（选填）
+            <textarea name="notes" rows="3" placeholder="例如：想优先预订青草冻，可填写“青草冻”】【可选】"></textarea>
+          </label>
+          <button type="submit" class="cta">提交预订信息</button>
+          <p class="hint">提交不会立即扣款；我们会在 4 小时内通过 WhatsApp 与您确认。</p>
         </form>
       </section>
 
+      <section class="card" style="margin-top: 16px;">
+        <h2 style="margin-bottom: 8px;">即将上线：青草冻</h2>
+        <p class="hint">如希望优先通知与预订，请在“备注”中填写「青草冻」。</p>
+      </section>
+
       <section id="successSection" class="card success hidden">
-        <h2>恭喜你完成预定</h2>
-        <p>我们会尽快联系你确认，并安排制作。</p>
+        <h2>已收到您的预订信息</h2>
+        <p>我们将在 4 小时内通过 WhatsApp 与您确认。</p>
         <div class="success-info">
-          <p>取货地点：La Thea 保安亭前</p>
-          <p>支付方式：线下支付</p>
+          <p>自提地点：16 Sierra</p>
+          <p>说明：以 WhatsApp 确认为准</p>
         </div>
         <a class="ghost" href="/">返回首页</a>
       </section>
