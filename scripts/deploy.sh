@@ -84,7 +84,7 @@ before_line="$(sudo -u "${APP_USER}" -H bash -s -- "${APP_DIR}" <<'APP'
 set -euo pipefail
 cd "$1"
 
-dirty="$(git status --porcelain)"
+dirty="$(git status --porcelain --untracked-files=no)"
 if [[ -n "${dirty}" ]]; then
   echo "[app] Error: repo has local changes; refusing deploy." >&2
   echo "${dirty}" >&2

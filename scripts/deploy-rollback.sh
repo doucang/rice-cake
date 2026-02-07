@@ -108,7 +108,7 @@ echo "[remote] target : ${target_line}"
 dirty="$(sudo -u "${APP_USER}" -H bash -s -- "${APP_DIR}" <<'APP'
 set -euo pipefail
 cd "$1"
-git status --porcelain
+git status --porcelain --untracked-files=no
 APP
 )"
 if [[ -n "${dirty}" ]]; then
