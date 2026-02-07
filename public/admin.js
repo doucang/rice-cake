@@ -34,8 +34,11 @@ function renderOrders(data) {
             <span>${order.quantity} 份</span>
           </div>
           <p>状态：${status}</p>
+          <p>渠道：${order.channel || "-"}</p>
+          <p>支付方式：${order.paymentMethod || "-"}</p>
+          <p class="meta">订单号：${order.id}</p>
           <p>联系方式：${order.contact || "-"}</p>
-          <p>付款参考号：${order.paymentRef || "-"}</p>
+          <p>交易编号：${order.paymentRef || "-"}</p>
           <p>取货日期：${order.pickupDate || "-"}</p>
           <p>自提地点：${order.pickupLocation || "-"}</p>
           <p>合计：RM ${order.total ?? "-"}</p>

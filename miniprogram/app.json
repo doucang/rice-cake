@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/order/order",
+    "pages/info/info",
+    "pages/pay/pay",
+    "pages/success/success"
+  ],
+  "window": {
+    "navigationBarTitleText": "叶记古法手作",
+    "navigationBarBackgroundColor": "#0f766e",
+    "navigationBarTextStyle": "white",
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#f6f7fb"
+  }
+}
+

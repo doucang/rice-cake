@@ -1,0 +1,55 @@
+<view class="page">
+  <view class="card">
+    <view class="title">填写预订信息</view>
+    <view class="sub">提交后我们会联系确认</view>
+
+    <view class="section">
+      <view class="label">订单确认</view>
+      <view class="row" style="align-items:flex-end;">
+        <view>
+          <view class="sub">合计金额</view>
+          <view style="font-size:20px;font-weight:800;">RM {{total}}</view>
+        </view>
+        <view style="flex:1; text-align:right;">
+          <view class="sub">品类明细</view>
+          <view>{{itemsText}}</view>
+        </view>
+      </view>
+      <view class="hint">下一步将进入付款页（扫码付款后填写交易编号）。</view>
+    </view>
+
+    <view class="section">
+      <view class="label">自提地点（必选）</view>
+      <picker mode="selector" range="{{pickupLocations}}" value="{{pickupIndex}}" bindchange="onPickupChange">
+        <view class="input">{{pickupLocations[pickupIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="section">
+      <view class="label">取货日期（必填）</view>
+      <picker mode="date" value="{{pickupDate}}" bindchange="onDateChange">
+        <view class="input">{{pickupDate || "请选择日期"}}</view>
+      </picker>
+    </view>
+
+    <view class="section">
+      <view class="label">WhatsApp 联系方式（必填）</view>
+      <input class="input" placeholder="例如：+60 12-345 6789" value="{{contact}}" bindinput="onContact" />
+    </view>
+
+    <view class="section">
+      <view class="label">称呼（必填）</view>
+      <input class="input" placeholder="例如：李女士" value="{{name}}" bindinput="onName" />
+    </view>
+
+    <view class="section">
+      <view class="label">备注（选填）</view>
+      <textarea class="input" style="min-height:90px;" placeholder="例如：不要太甜" value="{{notes}}" bindinput="onNotes"></textarea>
+    </view>
+
+    <view class="hr"></view>
+
+    <button class="btn-primary" bindtap="goNext">进入提交页</button>
+    <view class="hint">先填信息再提交，避免漏填。</view>
+  </view>
+</view>

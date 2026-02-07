@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <defs>
+    <style>
+      .bg { fill: #f6f1ea; }
+      .card { fill: #ffffff; stroke: #e7ded2; stroke-width: 2; }
+      .title { font: 600 28px system-ui, -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #2b221e; }
+      .label { font: 500 18px system-ui, -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #6b5a52; }
+      .value { font: 600 18px system-ui, -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #2b221e; }
+      .hint { font: 500 16px system-ui, -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #6b5a52; }
+      .line { stroke: #eee6db; stroke-width: 2; }
+      .hl { fill: rgba(212, 106, 58, 0.08); stroke: #d46a3a; stroke-width: 3; }
+      .hlText { font: 700 18px system-ui, -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #b9562d; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="960" height="540" rx="28"/>
+
+  <rect class="card" x="70" y="60" width="820" height="360" rx="22"/>
+  <text class="title" x="110" y="110">TNG 交易详情页（示意）</text>
+
+  <!-- rows -->
+  <line class="line" x1="110" y1="150" x2="850" y2="150"/>
+  <text class="label" x="110" y="185">交易类型</text>
+  <text class="value" x="600" y="185">支付</text>
+
+  <line class="line" x1="110" y1="220" x2="850" y2="220"/>
+  <text class="label" x="110" y="255">商家</text>
+  <text class="value" x="420" y="255">Old Puchong Food Avenue</text>
+
+  <line class="line" x1="110" y1="290" x2="850" y2="290"/>
+  <text class="label" x="110" y="325">日期/时间</text>
+  <text class="value" x="520" y="325">05/02/2026 11:23:40</text>
+
+  <!-- highlighted row -->
+  <rect class="hl" x="100" y="345" width="760" height="60" rx="14"/>
+  <text class="hlText" x="130" y="383">交易编号</text>
+  <text class="value" x="330" y="383">260205032340010415261584</text>
+
+  <text class="hint" x="70" y="475">提示：在 TNG 交易记录里打开这笔交易的详情，找到「交易编号」这一行，复制后填写到页面即可。</text>
+</svg>
+

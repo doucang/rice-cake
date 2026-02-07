@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="card">
+    <view class="title">付款并完成预订</view>
+    <view class="sub">请扫码付款后填写交易编号提交</view>
+
+    <view class="section">
+      <view class="label">应付金额</view>
+      <view style="font-size:20px;font-weight:800;">RM {{total}}</view>
+      <view class="sub" style="margin-top:6px;">品类明细：{{itemsText}}</view>
+    </view>
+
+    <view class="section">
+      <view class="label">收款码</view>
+      <image class="qr" src="../../assets/tng-qr.jpg" mode="widthFix" bindtap="previewQr" />
+      <view class="hint">提示：如微信/支付宝无法扫码支付，请使用 TNG 或银行 App 扫码。</view>
+    </view>
+
+    <view class="hr"></view>
+
+    <view class="section">
+      <view class="row" style="align-items:flex-end;">
+        <view style="flex:1;">
+          <view class="label">交易编号（必填）</view>
+          <input class="input" placeholder="付款成功后在交易详情页复制交易编号" value="{{paymentRef}}" bindinput="onPaymentRef" />
+        </view>
+        <button class="btn-ghost" size="mini" bindtap="showTxnHelp">?</button>
+      </view>
+    </view>
+
+    <button class="btn-primary" style="margin-top:12px;" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">提交预订（完成）</button>
+    <view class="hint">提交后我们将在 4 小时内联系确认。</view>
+  </view>
+</view>

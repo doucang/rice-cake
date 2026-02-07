@@ -48,6 +48,19 @@ function loadInfo() {
   }
 }
 
+function saveReceipt(receipt) {
+  localStorage.setItem("ricecake.receipt", JSON.stringify(receipt));
+}
+
+function loadReceipt() {
+  try {
+    const raw = localStorage.getItem("ricecake.receipt");
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
 function renderSummary(checkout) {
   const totalEl = $("totalAmount");
   const itemsEl = $("itemsSummary");
@@ -124,8 +137,8 @@ function setupQtyButtons() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
-    if (!data.pickupDate || !data.contact || !data.name) {
-      alert("请完整填写取货日期、WhatsApp 联系方式与称呼。");
+    if (!data.pickupLocation || !data.pickupDate || !data.contact || !data.name) {
+      alert("请完整填写自提地点、取货日期、WhatsApp 联系方式与称呼。");
       return;
     }
     saveInfo(data);
@@ -145,7 +158,7 @@ function setupQtyButtons() {
     window.location.href = "/order.html";
     return;
   }
-  if (!info || !info.pickupDate || !info.contact || !info.name) {
+  if (!info || !info.pickupLocation || !info.pickupDate || !info.contact || !info.name) {
     alert("请先填写预订信息。");
     window.location.href = "/info.html";
     return;
@@ -153,20 +166,45 @@ function setupQtyButtons() {
   renderSummary(checkout);
 
   const paySection = $("paySection");
-  const successSection = $("successSection");
+  const txnHelpBtn = $("txnHelpBtn");
+  const txnHelpModal = $("txnHelpModal");
+  const closeHelpBtn = $("closeHelpBtn");
+
+  function openHelp() {
+    if (!txnHelpModal) return;
+    txnHelpModal.classList.remove("hidden");
+  }
+
+  function closeHelp() {
+    if (!txnHelpModal) return;
+    txnHelpModal.classList.add("hidden");
+  }
+
+  if (txnHelpBtn && txnHelpModal) {
+    txnHelpBtn.addEventListener("click", openHelp);
+    if (closeHelpBtn) closeHelpBtn.addEventListener("click", closeHelp);
+    txnHelpModal.addEventListener("click", (e) => {
+      if (e.target === txnHelpModal) closeHelp();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeHelp();
+    });
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
     const paymentRef = (data.paymentRef || "").trim();
     if (!paymentRef) {
-      alert("请填写付款参考号 / Transaction ID。");
+      alert("请填写交易编号。");
       return;
     }
 
     const payload = {
+      channel: "H5_WHATSAPP",
       // from info
       pickupDate: info.pickupDate,
+      pickupLocation: info.pickupLocation,
       contact: info.contact,
       name: info.name,
       notes: info.notes || "",
@@ -175,6 +213,7 @@ function setupQtyButtons() {
       total: checkout.total,
       quantity: checkout.items.reduce((s, x) => s + (Number(x.qty) || 0), 0),
       // payment
+      paymentMethod: "DUITNOW_QR",
       paymentRef
     };
 
@@ -195,36 +234,25 @@ function setupQtyButtons() {
       }
 
       const orderId = out?.order?.id;
-      const orderIdLine = document.getElementById("orderIdLine");
-      if (orderIdLine && orderId) {
-        orderIdLine.textContent = `订单号：${orderId}`;
-      }
-
-      // Build WhatsApp after-sales link (only opens when user clicks)
-      const whatsappLink = document.getElementById("whatsappLink");
-      if (whatsappLink) {
-        const phone = "60199619968";
-        const msg = [
-          "你好，我需要售后/改期支持：",
-          `订单号：${orderId || "-"}`,
-          `取货日期：${payload.pickupDate}`,
-          `合计金额：RM ${payload.total}`,
-          `Transaction ID：${paymentRef}`,
-          `称呼：${payload.name}`,
-        ].join("\n");
-        whatsappLink.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-      }
 
       // clear stored flow data
       localStorage.removeItem("ricecake.checkout");
       localStorage.removeItem("ricecake.info");
 
+      saveReceipt({
+        orderId: orderId || "",
+        pickupDate: payload.pickupDate,
+        pickupLocation: payload.pickupLocation,
+        items: payload.items,
+        total: payload.total,
+        paymentRef,
+        name: payload.name,
+        contact: payload.contact
+      });
+
       form.reset();
-      if (paySection && successSection) {
-        paySection.classList.add("hidden");
-        successSection.classList.remove("hidden");
-        successSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      if (paySection) paySection.classList.add("hidden");
+      window.location.href = "/success.html";
     } catch {
       alert("网络异常，请稍后再试");
     } finally {
@@ -232,4 +260,47 @@ function setupQtyButtons() {
       submitButton.textContent = "提交预订（完成）";
     }
   });
+})();
+
+// Page: success.html
+(function initSuccessPage() {
+  const orderIdEl = $("successOrderId");
+  if (!orderIdEl) return;
+
+  const receipt = loadReceipt();
+  const pickupEl = $("successPickup");
+  const pickupDateEl = $("successPickupDate");
+  const itemsEl = $("successItems");
+  const totalEl = $("successTotal");
+
+  if (!receipt || !receipt.orderId) {
+    orderIdEl.textContent = "订单号：-";
+    if (pickupEl) pickupEl.textContent = "自提地点：-";
+    if (pickupDateEl) pickupDateEl.textContent = "取货日期：-";
+    if (itemsEl) itemsEl.textContent = "预订内容：-";
+    if (totalEl) totalEl.textContent = "金额：RM -";
+    return;
+  }
+
+  orderIdEl.textContent = `订单号：${receipt.orderId}`;
+  if (pickupEl) pickupEl.textContent = `自提地点：${receipt.pickupLocation || "-"}`;
+  if (pickupDateEl) pickupDateEl.textContent = `取货日期：${receipt.pickupDate || "-"}`;
+  if (itemsEl) itemsEl.textContent = `预订内容：${formatItems(receipt.items)}`;
+  if (totalEl) totalEl.textContent = `金额：RM ${receipt.total ?? "-"}`;
+
+  const phone = "60199619968";
+  const afterSalesLink = $("whatsappAfterSales");
+  if (afterSalesLink) {
+    const msg = [
+      "你好，我需要售后帮助：",
+      `订单号：${receipt.orderId || "-"}`,
+      `自提地点：${receipt.pickupLocation || "-"}`,
+      `取货日期：${receipt.pickupDate || "-"}`,
+      `预订内容：${formatItems(receipt.items)}`,
+      `金额：RM ${receipt.total ?? "-"}`,
+      `交易编号：${receipt.paymentRef || "-"}`,
+      `称呼：${receipt.name || "-"}`,
+    ].join("\n");
+    afterSalesLink.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  }
 })();

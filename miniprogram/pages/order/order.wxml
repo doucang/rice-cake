@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="card">
+    <view class="title">选择品类</view>
+    <view class="sub">自提地点：16 Sierra / Nexus 学校</view>
+
+    <view class="section">
+      <view class="label">可预订</view>
+      <view wx:for="{{catalog}}" wx:key="sku">
+        <view wx:if="{{item.enabled}}" class="row" style="padding:10px 0;">
+          <view>
+            <view style="font-weight:700;">{{item.name}}</view>
+            <view class="sub">单价：RM {{item.unitPrice}} / 份</view>
+          </view>
+          <view class="row" style="gap:8px;">
+            <button class="btn-ghost" size="mini" data-sku="{{item.sku}}" data-step="-1" bindtap="stepQty">-</button>
+            <view style="min-width:24px;text-align:center;">{{item.qty}}</view>
+            <button class="btn-ghost" size="mini" data-sku="{{item.sku}}" data-step="1" bindtap="stepQty">+</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="label">即将上线</view>
+      <view wx:for="{{catalog}}" wx:key="sku">
+        <view wx:if="{{!item.enabled}}" class="row" style="padding:10px 0; opacity: 0.75;">
+          <view>
+            <view style="font-weight:700;">{{item.name}}</view>
+            <view class="sub">{{item.note || "Coming soon"}}</view>
+          </view>
+          <view style="font-size:12px; color: rgba(15,23,42,0.6); border: 1px solid rgba(15,23,42,0.15); padding: 4px 8px; border-radius: 999px;">
+            {{item.tag || "Soon"}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="hr"></view>
+
+    <view class="row">
+      <view>
+        <view class="label">合计金额</view>
+        <view style="font-size:20px;font-weight:800;">RM {{total}}</view>
+        <view class="sub" style="margin-top:6px;">品类明细：{{itemsText}}</view>
+      </view>
+      <button class="btn-primary" bindtap="goNext" disabled="{{total<=0}}">下一步</button>
+    </view>
+    <view class="hint">先选品类与数量 → 填写信息 → 再提交预订。</view>
+  </view>
+</view>

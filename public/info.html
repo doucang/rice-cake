@@ -12,7 +12,7 @@
         <a class="back" href="/order.html">返回</a>
         <div>
           <h1>填写预订信息</h1>
-          <p>自提地点：16 Sierra｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
+          <p>自提地点：16 Sierra / Nexus 学校｜我们将在 4 小时内通过 WhatsApp 回复确认</p>
         </div>
       </header>
 
@@ -33,6 +33,14 @@
 
       <section class="card">
         <form id="infoForm" class="order-form">
+          <label>
+            自提地点（必选）
+            <select name="pickupLocation" required>
+              <option value="16 Sierra">16 Sierra</option>
+              <option value="Nexus 学校">Nexus 学校</option>
+            </select>
+          </label>
+
           <label>
             取货日期（必填）
             <input type="date" name="pickupDate" required />

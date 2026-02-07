@@ -12,7 +12,7 @@
         <a class="back" href="/info.html">返回</a>
         <div>
           <h1>付款并完成预订</h1>
-          <p>支付方式：TNG / DuitNow QR｜付款后填写 Transaction ID 提交</p>
+          <p>支付方式：TNG / DuitNow QR｜付款后填写交易编号提交</p>
         </div>
       </header>
 
@@ -31,34 +31,33 @@
         <div class="pay-qr">
           <img src="/tng-qr.jpg" alt="Touch ’n Go / DuitNow 收款码" loading="lazy" />
         </div>
-        <p class="hint" style="margin-top: 10px;">请按上方金额完成付款。付款后，请从 TNG 交易记录中复制/填写 Transaction ID。</p>
+        <p class="hint" style="margin-top: 10px;">请按上方金额完成付款。付款后，请从 TNG 交易记录中复制/填写交易编号。</p>
       </section>
 
       <section id="paySection" class="card">
         <form id="payForm" class="order-form">
           <label>
-            付款参考号 / Transaction ID（必填）
-            <input type="text" name="paymentRef" placeholder="例如：TNG 的 Transaction ID / Reference No." required />
+            <span class="field-label">
+              交易编号（必填）
+              <button type="button" class="help-btn" id="txnHelpBtn" aria-label="如何找到交易编号？">?</button>
+            </span>
+            <input type="text" name="paymentRef" placeholder="例如：TNG 交易详情页的交易编号" required />
           </label>
           <button type="submit" class="cta">提交预订（完成）</button>
           <p class="hint">提交后我们将在 4 小时内通过 WhatsApp 回复确认。</p>
         </form>
       </section>
 
-      <section id="successSection" class="card success hidden">
-        <h2>预订已提交</h2>
-        <p>我们将在 4 小时内通过 WhatsApp 与您确认。</p>
-        <div class="success-info">
-          <p>自提地点：16 Sierra</p>
-          <p>说明：后台核对 Transaction ID 后确认收款</p>
-          <p id="orderIdLine" class="meta" style="margin-top: 6px;"></p>
+      <div id="txnHelpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="txnHelpTitle">
+        <div class="modal-card">
+          <div class="modal-head">
+            <h2 id="txnHelpTitle">如何找到交易编号？</h2>
+            <button type="button" class="ghost" id="closeHelpBtn">关闭</button>
+          </div>
+          <img src="/txn-help.svg" alt="交易编号示例" loading="lazy" />
+          <p class="hint">在 TNG 交易详情页找到「交易编号」这一行，并复制填写。</p>
         </div>
-
-        <a class="cta" id="whatsappLink" href="#" target="_blank" rel="noreferrer">售后/改期（WhatsApp）</a>
-        <p class="hint">仅在需要帮助时联系，我们不会主动打扰你。</p>
-
-        <a class="ghost" href="/">返回首页</a>
-      </section>
+      </div>
     </main>
 
     <script src="/app.js"></script>

@@ -103,12 +103,32 @@ app.get("/api/orders", requireAdmin, (req, res) => {
 });
 
 app.post("/api/orders", (req, res) => {
-  const { name, contact, phone, quantity, pickupDate, paymentRef, items, total, notes } = req.body || {};
+  const {
+    name,
+    contact,
+    phone,
+    quantity,
+    pickupDate,
+    pickupLocation,
+    paymentRef,
+    paymentMethod,
+    channel,
+    items,
+    total,
+    notes
+  } = req.body || {};
   const finalContact = contact || phone || "";
   const finalPaymentRef = (paymentRef || "").trim();
+  const finalPaymentMethod = String(paymentMethod || "DUITNOW_QR");
+  const finalChannel = String(channel || "H5_WHATSAPP");
+  const allowedPickupLocations = new Set(["16 Sierra", "Nexus 学校"]);
+  const finalPickupLocation = String(pickupLocation || "");
 
-  if (!name || !finalContact || !quantity || !pickupDate || !finalPaymentRef) {
-    return res.status(400).json({ error: "请完整填写取货日期、数量、付款参考号、联系方式与称呼" });
+  if (!name || !finalContact || !quantity || !pickupDate || !finalPaymentRef || !finalPickupLocation) {
+    return res.status(400).json({ error: "请完整填写自提地点、取货日期、数量、交易编号、联系方式与称呼" });
+  }
+  if (!allowedPickupLocations.has(finalPickupLocation)) {
+    return res.status(400).json({ error: "自提地点不支持" });
   }
 
   const orders = readOrders();
@@ -119,10 +139,12 @@ app.post("/api/orders", (req, res) => {
     contact: finalContact,
     quantity: Number(quantity),
     pickupDate,
-    pickupLocation: "16 Sierra",
+    pickupLocation: finalPickupLocation,
     items: Array.isArray(items) ? items : [],
     total: Number(total) || 0,
     paymentRef: finalPaymentRef,
+    paymentMethod: finalPaymentMethod,
+    channel: finalChannel,
     status: "NEW",
     notes: notes || ""
   };
