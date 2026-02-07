@@ -2,6 +2,21 @@ const summaryEl = document.getElementById("summary");
 const listEl = document.getElementById("orderList");
 const refreshBtn = document.getElementById("refreshBtn");
 
+function paymentMethodLabel(method) {
+  if (method === "WECHAT_QR") return "微信";
+  if (method === "ALIPAY_QR") return "支付宝";
+  if (method === "DUITNOW_QR") return "TNG";
+  return method || "-";
+}
+
+function formatAmount(order) {
+  const myr = `RM ${order.total ?? "-"}`;
+  if (order.paymentCurrency === "CNY" && typeof order.totalCny === "number") {
+    return `¥${Number(order.totalCny).toFixed(2)}（约 ${myr}）`;
+  }
+  return myr;
+}
+
 function renderSummary(data) {
   summaryEl.innerHTML = `
     <div class="summary-grid">
@@ -35,13 +50,13 @@ function renderOrders(data) {
           </div>
           <p>状态：${status}</p>
           <p>渠道：${order.channel || "-"}</p>
-          <p>支付方式：${order.paymentMethod || "-"}</p>
+          <p>支付方式：${paymentMethodLabel(order.paymentMethod)}</p>
           <p class="meta">订单号：${order.id}</p>
           <p>联系方式：${order.contact || "-"}</p>
           <p>交易编号：${order.paymentRef || "-"}</p>
           <p>取货日期：${order.pickupDate || "-"}</p>
           <p>自提地点：${order.pickupLocation || "-"}</p>
-          <p>合计：RM ${order.total ?? "-"}</p>
+          <p>金额：${formatAmount(order)}</p>
           <p>明细：${(order.items || []).map(x => `${x.name}×${x.qty}`).join("，") || "-"}</p>
           <p>备注：${order.notes || "-"}</p>
           <div class="admin-actions">

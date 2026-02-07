@@ -11,10 +11,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASS = process.env.ADMIN_PASS || "";
+const FX_MYR_CNY_RATE = (process.env.MYR_CNY_RATE || "").trim();
+const FX_CACHE_TTL_MS = Number(process.env.FX_CACHE_TTL_MS || 6 * 60 * 60 * 1000);
 
 const DATA_DIR = path.join(__dirname, "data");
 const DATA_FILE = path.join(DATA_DIR, "orders.json");
 const PUBLIC_DIR = path.join(__dirname, "public");
+
+let fxMyrCnyCache = null; // { rate, asOf, source, fetchedAtMs }
 
 function requireAdmin(req, res, next) {
   // If no admin password is set, keep local/dev convenient.
@@ -80,6 +84,15 @@ app.get("/admin.js", requireAdmin, (req, res) => {
 
 app.use(express.static(PUBLIC_DIR));
 
+app.get("/api/fx/myr-cny", async (req, res) => {
+  try {
+    const fx = await getMyrCnyRate();
+    res.json(fx);
+  } catch {
+    res.status(502).json({ error: "FX_UNAVAILABLE" });
+  }
+});
+
 app.get("/api/orders", requireAdmin, (req, res) => {
   const orders = readOrders();
   const total = orders.length;
@@ -112,6 +125,9 @@ app.post("/api/orders", (req, res) => {
     pickupLocation,
     paymentRef,
     paymentMethod,
+    paymentCurrency,
+    fxRateMyrToCny,
+    totalCny,
     channel,
     items,
     total,
@@ -119,10 +135,15 @@ app.post("/api/orders", (req, res) => {
   } = req.body || {};
   const finalContact = contact || phone || "";
   const finalPaymentRef = (paymentRef || "").trim();
-  const finalPaymentMethod = String(paymentMethod || "DUITNOW_QR");
+  const finalPaymentMethod = String(paymentMethod || "WECHAT_QR");
+  const allowedPaymentMethods = new Set(["WECHAT_QR", "ALIPAY_QR", "DUITNOW_QR"]);
   const finalChannel = String(channel || "H5_WHATSAPP");
   const allowedPickupLocations = new Set(["16 Sierra", "Nexus 学校"]);
   const finalPickupLocation = String(pickupLocation || "");
+
+  if (!allowedPaymentMethods.has(finalPaymentMethod)) {
+    return res.status(400).json({ error: "支付方式不支持" });
+  }
 
   if (!name || !finalContact || !quantity || !pickupDate || !finalPaymentRef || !finalPickupLocation) {
     return res.status(400).json({ error: "请完整填写自提地点、取货日期、数量、交易编号、联系方式与称呼" });
@@ -130,6 +151,12 @@ app.post("/api/orders", (req, res) => {
   if (!allowedPickupLocations.has(finalPickupLocation)) {
     return res.status(400).json({ error: "自提地点不支持" });
   }
+
+  const inferredCurrency = finalPaymentMethod === "DUITNOW_QR" ? "MYR" : "CNY";
+  // Keep currency consistent with paymentMethod (ignore any mismatched client input)
+  const normalizedPaymentCurrency = inferredCurrency;
+  const fxRateNum = Number(fxRateMyrToCny);
+  const totalCnyNum = Number(totalCny);
 
   const orders = readOrders();
   const newOrder = {
@@ -144,6 +171,9 @@ app.post("/api/orders", (req, res) => {
     total: Number(total) || 0,
     paymentRef: finalPaymentRef,
     paymentMethod: finalPaymentMethod,
+    paymentCurrency: normalizedPaymentCurrency,
+    fxRateMyrToCny: normalizedPaymentCurrency === "CNY" && Number.isFinite(fxRateNum) && fxRateNum > 0 ? fxRateNum : undefined,
+    totalCny: normalizedPaymentCurrency === "CNY" && Number.isFinite(totalCnyNum) && totalCnyNum > 0 ? totalCnyNum : undefined,
     channel: finalChannel,
     status: "NEW",
     notes: notes || ""
@@ -179,6 +209,59 @@ app.patch("/api/orders/:id", requireAdmin, (req, res) => {
 
 function cryptoRandomId() {
   return randomBytes(8).toString("hex");
+}
+
+async function getMyrCnyRate() {
+  // Manual override (useful for production stability)
+  const manual = Number(FX_MYR_CNY_RATE);
+  if (Number.isFinite(manual) && manual > 0) {
+    return {
+      base: "MYR",
+      quote: "CNY",
+      rate: manual,
+      asOf: new Date().toISOString(),
+      source: "manual"
+    };
+  }
+
+  const now = Date.now();
+  if (fxMyrCnyCache && (now - fxMyrCnyCache.fetchedAtMs) < FX_CACHE_TTL_MS) {
+    const { fetchedAtMs, ...value } = fxMyrCnyCache;
+    return value;
+  }
+
+  try {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 3500);
+    const res = await fetch("https://www.floatrates.com/daily/myr.json", { signal: controller.signal });
+    clearTimeout(t);
+    if (!res.ok) throw new Error("fx_http_error");
+    const data = await res.json();
+    const rate = Number(data?.cny?.rate);
+    const dateStr = String(data?.cny?.date || "");
+    if (!Number.isFinite(rate) || rate <= 0) throw new Error("fx_parse_error");
+
+    const asOf = new Date(dateStr);
+    const asOfIso = Number.isNaN(asOf.getTime()) ? new Date().toISOString() : asOf.toISOString();
+
+    const value = {
+      base: "MYR",
+      quote: "CNY",
+      rate,
+      asOf: asOfIso,
+      source: "floatrates"
+    };
+
+    fxMyrCnyCache = { ...value, fetchedAtMs: now };
+    return value;
+  } catch (e) {
+    // If we have any cache (even stale), return it instead of failing hard.
+    if (fxMyrCnyCache) {
+      const { fetchedAtMs, ...value } = fxMyrCnyCache;
+      return value;
+    }
+    throw e;
+  }
 }
 
 app.listen(PORT, () => {

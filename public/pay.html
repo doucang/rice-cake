@@ -12,16 +12,30 @@
         <a class="back" href="/info.html">返回</a>
         <div>
           <h1>付款并完成预订</h1>
-          <p>支付方式：TNG / DuitNow QR｜付款后填写交易编号提交</p>
+          <p id="paySubtitle">选择支付方式并扫码付款，付款后填写交易编号提交</p>
         </div>
       </header>
 
       <section class="card" style="margin-bottom: 16px;">
-        <h2 style="margin-bottom: 8px;">应付金额</h2>
+        <h2 style="margin-bottom: 10px;">选择支付方式</h2>
+
+        <div class="pay-methods" role="radiogroup" aria-label="支付方式">
+          <input type="radio" id="pmWechat" name="paymentMethod" value="WECHAT_QR" checked />
+          <label class="pay-pill" for="pmWechat">微信（推荐）</label>
+
+          <input type="radio" id="pmAlipay" name="paymentMethod" value="ALIPAY_QR" />
+          <label class="pay-pill" for="pmAlipay">支付宝</label>
+
+          <input type="radio" id="pmTng" name="paymentMethod" value="DUITNOW_QR" />
+          <label class="pay-pill" for="pmTng">TNG</label>
+        </div>
+
         <div class="summary-grid" style="margin-bottom: 12px;">
           <div>
-            <p class="label">合计金额</p>
-            <p class="value" id="totalAmount">RM 0</p>
+            <p class="label">应付金额</p>
+            <p class="value" id="payablePrimary">-</p>
+            <p class="value-sub" id="payableSecondary"></p>
+            <p class="meta" id="fxNote"></p>
           </div>
           <div>
             <p class="label">品类明细</p>
@@ -29,9 +43,9 @@
           </div>
         </div>
         <div class="pay-qr">
-          <img src="/tng-qr.jpg" alt="Touch ’n Go / DuitNow 收款码" loading="lazy" />
+          <img id="payQrImg" src="/wechat-qr.jpg" alt="微信收款码" loading="lazy" />
         </div>
-        <p class="hint" style="margin-top: 10px;">请按上方金额完成付款。付款后，请从 TNG 交易记录中复制/填写交易编号。</p>
+        <p class="hint" id="payHint" style="margin-top: 10px;">正在加载付款信息...</p>
       </section>
 
       <section id="paySection" class="card">
@@ -41,7 +55,7 @@
               交易编号（必填）
               <button type="button" class="help-btn" id="txnHelpBtn" aria-label="如何找到交易编号？">?</button>
             </span>
-            <input type="text" name="paymentRef" placeholder="例如：TNG 交易详情页的交易编号" required />
+            <input id="paymentRefInput" type="text" name="paymentRef" placeholder="例如：支付记录里的交易编号/订单号" required />
           </label>
           <button type="submit" class="cta">提交预订（完成）</button>
           <p class="hint">提交后我们将在 4 小时内通过 WhatsApp 回复确认。</p>
@@ -54,8 +68,8 @@
             <h2 id="txnHelpTitle">如何找到交易编号？</h2>
             <button type="button" class="ghost" id="closeHelpBtn">关闭</button>
           </div>
-          <img src="/txn-help.svg" alt="交易编号示例" loading="lazy" />
-          <p class="hint">在 TNG 交易详情页找到「交易编号」这一行，并复制填写。</p>
+          <img id="txnHelpImage" src="/txn-help.svg" alt="交易编号示例" loading="lazy" />
+          <p class="hint" id="txnHelpText">在支付详情/账单中找到「交易编号/交易号/订单号」这一行，并复制填写。</p>
         </div>
       </div>
     </main>
