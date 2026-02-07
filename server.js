@@ -19,6 +19,7 @@ const DATA_FILE = path.join(DATA_DIR, "orders.json");
 const PUBLIC_DIR = path.join(__dirname, "public");
 
 let fxMyrCnyCache = null; // { rate, asOf, source, fetchedAtMs }
+const ORDER_STATUS_ALLOWED = new Set(["NEW", "PAID", "FULFILLED", "CANCELLED"]);
 
 function requireAdmin(req, res, next) {
   // If no admin password is set, keep local/dev convenient.
@@ -94,14 +95,17 @@ app.get("/api/fx/myr-cny", async (req, res) => {
 });
 
 app.get("/api/orders", requireAdmin, (req, res) => {
+  const pickupDate = String(req.query.pickupDate || "").trim();
+
   const orders = readOrders();
-  const total = orders.length;
-  const totalQuantity = orders.reduce((sum, order) => {
+  const filteredOrders = pickupDate ? orders.filter(o => String(o.pickupDate || "") === pickupDate) : orders;
+  const total = filteredOrders.length;
+  const totalQuantity = filteredOrders.reduce((sum, order) => {
     return sum + (Number(order.quantity) || 0);
   }, 0);
 
   // basic breakdown
-  const statusCounts = orders.reduce((acc, o) => {
+  const statusCounts = filteredOrders.reduce((acc, o) => {
     const s = o.status || "NEW";
     acc[s] = (acc[s] || 0) + 1;
     return acc;
@@ -111,7 +115,7 @@ app.get("/api/orders", requireAdmin, (req, res) => {
     total,
     totalQuantity,
     statusCounts,
-    orders
+    orders: filteredOrders
   });
 });
 
@@ -185,12 +189,57 @@ app.post("/api/orders", (req, res) => {
   res.json({ ok: true, order: newOrder });
 });
 
+app.patch("/api/orders/bulk", requireAdmin, (req, res) => {
+  const { ids, status } = req.body || {};
+  const next = String(status || "").toUpperCase();
+  if (!ORDER_STATUS_ALLOWED.has(next)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: "Invalid ids" });
+  }
+
+  const uniqueIds = Array.from(new Set(ids.map(x => String(x || "").trim()).filter(Boolean)));
+  if (!uniqueIds.length) {
+    return res.status(400).json({ error: "Invalid ids" });
+  }
+
+  const idSet = new Set(uniqueIds);
+  const nowIso = new Date().toISOString();
+
+  const orders = readOrders();
+  const updatedIds = [];
+  for (let i = 0; i < orders.length; i++) {
+    const id = String(orders[i]?.id || "");
+    if (!idSet.has(id)) continue;
+    orders[i] = {
+      ...orders[i],
+      status: next,
+      updatedAt: nowIso
+    };
+    updatedIds.push(id);
+  }
+
+  writeOrders(orders);
+
+  const updatedSet = new Set(updatedIds);
+  const notFoundIds = uniqueIds.filter(id => !updatedSet.has(id));
+
+  res.json({
+    ok: true,
+    status: next,
+    updatedCount: updatedIds.length,
+    updatedIds,
+    notFoundIds
+  });
+});
+
 app.patch("/api/orders/:id", requireAdmin, (req, res) => {
   const { id } = req.params;
   const { status } = req.body || {};
   const next = String(status || "").toUpperCase();
-  const allowed = new Set(["NEW", "PAID", "FULFILLED", "CANCELLED"]);
-  if (!allowed.has(next)) {
+  if (!ORDER_STATUS_ALLOWED.has(next)) {
     return res.status(400).json({ error: "Invalid status" });
   }
 

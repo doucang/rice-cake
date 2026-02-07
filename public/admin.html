@@ -21,7 +21,30 @@
       <section class="card">
         <div class="list-head">
           <h2>预订列表</h2>
-          <button id="refreshBtn" class="ghost">刷新</button>
+          <div class="admin-toolbar" aria-label="筛选与操作">
+            <label class="toolbar-item" for="filterPickupDate">
+              取货日期
+              <input id="filterPickupDate" class="compact" type="date" />
+            </label>
+            <button id="clearDateBtn" class="ghost" type="button">全部</button>
+            <button id="todayBtn" class="ghost" type="button">今天</button>
+            <button id="refreshBtn" class="ghost" type="button">刷新</button>
+          </div>
+        </div>
+        <div class="bulk-bar" id="bulkBar">
+          <label class="check">
+            <input id="selectAll" type="checkbox" />
+            全选
+          </label>
+          <span class="bulk-count" id="bulkCount">已选 0</span>
+          <select id="bulkStatus" class="compact" aria-label="批量修改状态">
+            <option value="" selected disabled>批量改状态...</option>
+            <option value="PAID">标记已收款</option>
+            <option value="FULFILLED">标记完成</option>
+            <option value="CANCELLED">标记取消</option>
+            <option value="NEW">标记新订单</option>
+          </select>
+          <button id="bulkApplyBtn" class="ghost" type="button">应用</button>
         </div>
         <div id="orderList" class="order-list"></div>
       </section>
