@@ -96,7 +96,7 @@ if command -v curl >/dev/null 2>&1; then
   echo "[remote] healthcheck: ${HEALTH_URL}"
   ok=0
   for i in $(seq 1 20); do
-    if curl -fsS --max-time 2 "${HEALTH_URL}" >/dev/null; then
+    if curl -fsS --max-time 2 "${HEALTH_URL}" >/dev/null 2>&1; then
       ok=1
       break
     fi
@@ -106,6 +106,7 @@ if command -v curl >/dev/null 2>&1; then
   if [[ "${ok}" != "1" ]]; then
     echo "[remote] Error: healthcheck failed after retries." >&2
     echo "[remote] Hint: check service logs with: journalctl -u ${SERVICE} -n 200 --no-pager" >&2
+    curl -fsS --max-time 2 "${HEALTH_URL}" >/dev/null
     exit 1
   fi
 else
