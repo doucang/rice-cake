@@ -4,3 +4,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env
+
+# local storage
+data/orders.json
+
+# accidental release marker files
+0.1.1（修复）
+0.2.0（新增功能）
+1.0.0（破坏性变更）
