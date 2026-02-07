@@ -261,7 +261,7 @@ function setupQtyButtons() {
   let computedCnyTotal = null;
 
   function currentMethod() {
-    return methodInputs.find(x => x.checked)?.value || "WECHAT_QR";
+    return methodInputs.find(x => x.checked)?.value || "DUITNOW_QR";
   }
 
   function setText(el, text) {
@@ -427,6 +427,7 @@ function setupQtyButtons() {
       // clear stored flow data
       localStorage.removeItem("ricecake.checkout");
       localStorage.removeItem("ricecake.info");
+      localStorage.removeItem("ricecake.paymentMethod");
 
       saveReceipt({
         orderId: orderId || "",
