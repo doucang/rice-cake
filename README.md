@@ -89,3 +89,35 @@ gh release create v0.1.0 --title "v0.1.0" --notes "Release notes"
 ```
 
 你也可以在 GitHub 网页端进入 `Releases` 创建新版本说明。
+
+## 一键部署到阿里云（本机执行）
+
+仓库内置了一个脚本：本机 `git push` 后，自动 SSH 到服务器执行 `git pull --ff-only`，并重启 `systemd` 服务。
+
+```bash
+npm run deploy
+```
+
+提示：脚本默认要求本地工作区为干净状态（没有未提交改动/未跟踪文件），避免“以为部署了但其实没提交”。如需强行执行可加 `DEPLOY_ALLOW_DIRTY=1`。
+
+可选环境变量（默认值适配当前阿里云部署）：
+
+- `DEPLOY_SSH_USER`（默认 `root`）
+- `DEPLOY_SSH_HOST`（默认 `47.250.92.76`）
+- `DEPLOY_DIR`（默认 `/opt/ricecake`）
+- `DEPLOY_SERVICE`（默认 `ricecake.service`）
+- `DEPLOY_APP_USER`（默认 `ricecake`，用于在服务器上执行 `git pull`）
+- `DEPLOY_HEALTHCHECK_URL`（默认 `http://localhost:3000/`）
+- `DEPLOY_RUN_NPM_CI`（默认 `0`；当你改了依赖时可设为 `1`）
+
+示例（依赖有改动时）：
+
+```bash
+DEPLOY_RUN_NPM_CI=1 npm run deploy
+```
+
+示例（本地有未提交改动，但仍要部署已提交内容）：
+
+```bash
+DEPLOY_ALLOW_DIRTY=1 npm run deploy
+```

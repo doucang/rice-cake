@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "express": "^4.19.2"
