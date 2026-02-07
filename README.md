@@ -100,6 +100,32 @@ npm run deploy
 
 提示：脚本默认要求本地工作区为干净状态（没有未提交改动/未跟踪文件），避免“以为部署了但其实没提交”。如需强行执行可加 `DEPLOY_ALLOW_DIRTY=1`。
 
+### 查看当前线上版本与变更
+
+```bash
+npm run deploy:status
+```
+
+它会显示：
+
+- 服务器当前 `git` 提交（短 hash + 提交信息）
+- `git describe --tags` 解析出来的版本号（如果有打 tag）
+- 如果存在 `.deploy-prev`，会列出从上一版到当前版的提交列表（相当于“这版和上一版有什么不一样”）
+
+### 一键回退线上版本（Rollback）
+
+默认回退到上一版（来自服务器端 `.deploy-prev`；如果没有该文件，则回退到 `HEAD^`）：
+
+```bash
+npm run deploy:rollback
+```
+
+回退到指定版本（tag / commit hash）：
+
+```bash
+npm run deploy:rollback -- v0.1.1
+```
+
 可选环境变量（默认值适配当前阿里云部署）：
 
 - `DEPLOY_SSH_USER`（默认 `root`）

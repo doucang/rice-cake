@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "deploy": "bash scripts/deploy.sh"
+    "deploy": "bash scripts/deploy.sh",
+    "deploy:status": "bash scripts/deploy-status.sh",
+    "deploy:rollback": "bash scripts/deploy-rollback.sh"
   },
   "dependencies": {
     "express": "^4.19.2"

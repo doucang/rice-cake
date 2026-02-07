@@ -80,8 +80,44 @@ if [[ ! -d "${APP_DIR}/.git" ]]; then
   exit 1
 fi
 
+before_line="$(sudo -u "${APP_USER}" -H bash -s -- "${APP_DIR}" <<'APP'
+set -euo pipefail
+cd "$1"
+
+dirty="$(git status --porcelain)"
+if [[ -n "${dirty}" ]]; then
+  echo "[app] Error: repo has local changes; refusing deploy." >&2
+  echo "${dirty}" >&2
+  exit 1
+fi
+
+before_ref="$(git rev-parse HEAD)"
+before_line="$(git log -1 --format='%h %s' --no-color)"
+
+echo "${before_ref}" > .deploy-prev
+ts="$(date -Is 2>/dev/null || date)"
+printf "%s\tdeploy\t%s\n" "${ts}" "${before_line}" >> .deploy-history
+tail -n 50 .deploy-history > .deploy-history.tmp && mv .deploy-history.tmp .deploy-history
+
+echo "${before_line}"
+APP
+)"
+echo "[remote] before: ${before_line}"
+
 echo "[remote] git pull --ff-only"
-sudo -u "${APP_USER}" -H bash -lc "cd '${APP_DIR}' && git pull --ff-only"
+sudo -u "${APP_USER}" -H bash -s -- "${APP_DIR}" <<'APP'
+set -euo pipefail
+cd "$1"
+git pull --ff-only
+APP
+
+after_line="$(sudo -u "${APP_USER}" -H bash -s -- "${APP_DIR}" <<'APP'
+set -euo pipefail
+cd "$1"
+git log -1 --format='%h %s' --no-color
+APP
+)"
+echo "[remote] after : ${after_line}"
 
 if [[ "${RUN_NPM_CI}" == "1" ]]; then
   echo "[remote] npm ci --omit=dev"
