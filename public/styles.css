@@ -74,41 +74,6 @@ p {
   animation: rise 0.7s ease both;
 }
 
-.brand-home {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: inherit;
-  justify-self: center;
-}
-
-.brand-logo {
-  width: 96px;
-  height: 96px;
-  display: block;
-  object-fit: contain;
-  border-radius: 22px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid var(--line);
-  box-shadow: 0 16px 28px rgba(43, 34, 30, 0.12);
-}
-
-.brand-logo--small {
-  width: 54px;
-  height: 54px;
-  border-radius: 16px;
-  padding: 6px;
-  box-shadow: none;
-}
-
-.order-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .hero-top {
   display: flex;
   justify-content: space-between;
